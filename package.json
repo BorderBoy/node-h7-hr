@@ -2,6 +2,6 @@
   "name": "noble-h7",
   "private": true,
   "dependencies": {
-    "noble": "^1.7.0"
+    "@abandonware/noble": "^1.9.2-23"
   }
 }

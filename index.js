@@ -1,4 +1,4 @@
-var noble = require('noble');
+var noble = require('@abandonware/noble');
 
 noble.on('stateChange', function(state) {
   if (state === 'poweredOn') {
@@ -20,9 +20,11 @@ noble.on('discover', function(peripheral) {
     // 180d is the bluetooth service for heart rate:
     // https://developer.bluetooth.org/gatt/services/Pages/ServiceViewer.aspx?u=org.bluetooth.service.heart_rate.xml
     var serviceUUID = ["180d"];
+    // var serviceUUID = ["180f"];
     // 2a37 is the characteristic for heart rate measurement
     // https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
     var characteristicUUID = ["2a37"];
+    // var characteristicUUID = ["2a19"];
 
     // use noble's discoverSomeServicesAndCharacteristics
     // scoped to the heart rate service and measurement characteristic
@@ -33,7 +35,12 @@ noble.on('discover', function(peripheral) {
           // The actual BPM data is stored in the 2nd bit in data (at array index 1)
           // Thanks Steve Daniel: http://www.raywenderlich.com/52080/introduction-core-bluetooth-building-heart-rate-monitor
           // Measurement docs here: https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
-          console.log('data is: ' + data[1]);
+          process.stdout.write('BPM: ' + data[1] + ", RR: ");
+          for (var i = 0; i < (data.length-2)/2; i++) {
+            process.stdout.write((data.readUint16LE(2+2*i)/1024).toPrecision(2) + " ");
+          }
+          console.log("");
+          // console.log(data[0].toString(2));
         });
       });
     });
